@@ -19,6 +19,7 @@ export default function OrderDetail() {
   const [loading, setLoading] = useState(true);
   const [order, setOrder] = useState(null);
   const [err, setErr] = useState("");
+  const [paying, setPaying] = useState(false);
 
   useEffect(() => {
     if (!router.isReady || !type || !no) return;
@@ -89,7 +90,6 @@ export default function OrderDetail() {
   const canPay = isPending || /待支付|待付款/.test(order.status_text || "");
 
   // 调 order/pay 拿支付链接并跳转
-  const [paying, setPaying] = useState(false);
   const payOrder = async (payType) => {
     setPaying(true);
     const path = isFlight ? "/api/flight/order/pay" : "/api/hotel/order/pay";
