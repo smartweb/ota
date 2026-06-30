@@ -93,12 +93,12 @@ export default function FlightList() {
     <div className="page">
       <NavBar title={`${from_city || ""} → ${to_city || ""}`} />
       <div className="px-1 pt-4 pb-2 flex items-center justify-between">
-        <div className="text-lg text-gray-600">{prettyDate(depart_date)}</div>
+        <div className="text-lg text-inksoft">{prettyDate(depart_date)}</div>
         <div className="flex gap-2">
           <button
             onClick={() => setSortBy("price")}
             className={`px-4 py-2 rounded-full text-base font-bold ${
-              sortBy === "price" ? "bg-brand text-white" : "bg-gray-100 text-gray-600"
+              sortBy === "price" ? "bg-brand text-white" : "bg-paperdeep text-inksoft"
             }`}
           >
             价格最低
@@ -106,7 +106,7 @@ export default function FlightList() {
           <button
             onClick={() => setSortBy("time")}
             className={`px-4 py-2 rounded-full text-base font-bold ${
-              sortBy === "time" ? "bg-brand text-white" : "bg-gray-100 text-gray-600"
+              sortBy === "time" ? "bg-brand text-white" : "bg-paperdeep text-inksoft"
             }`}
           >
             时间最早
@@ -116,7 +116,7 @@ export default function FlightList() {
 
       {loading && <Loading text="正在查找航班…" />}
       {!loading && err && (
-        <div className="card mt-4 text-center text-orange-600 text-lg">{err}</div>
+        <div className="card mt-4 text-center text-brand-deep text-lg">{err}</div>
       )}
       {!loading && !err && sorted.length === 0 && (
         <Empty text="这一天没有合适的航班" icon="✈️" />
@@ -140,7 +140,7 @@ export default function FlightList() {
                 className="card w-full text-left active:scale-[0.99] transition-transform disabled:opacity-60"
               >
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-lg font-bold text-gray-600">
+                  <span className="text-lg font-bold text-inksoft">
                     {f.airline_name} {f.flight_no}
                   </span>
                   <span
@@ -159,31 +159,31 @@ export default function FlightList() {
                 <div className="flex items-center justify-between">
                   <div className="text-center">
                     <div className="text-3xl font-extrabold text-ink">{shortTime(f.dep_time)}</div>
-                    <div className="text-base text-gray-500 mt-1">
+                    <div className="text-base text-inksoft mt-1">
                       {f.dep_city_name} {f.dep_airport_name}
                     </div>
                   </div>
 
                   <div className="flex-1 mx-3 text-center">
-                    <div className="text-base text-gray-400">{prettyDuration(f.duration_minutes)}</div>
+                    <div className="text-base text-inkmute">{prettyDuration(f.duration_minutes)}</div>
                     <div className="flex items-center justify-center text-brand text-xl">✈️ →</div>
                     {f.stop_count > 0 && (
-                      <div className="text-base text-orange-500">经停{f.stop_count}次</div>
+                      <div className="text-base text-brand-deep">经停{f.stop_count}次</div>
                     )}
                   </div>
 
                   <div className="text-center">
                     <div className="text-3xl font-extrabold text-ink">{shortTime(f.arr_time)}</div>
-                    <div className="text-base text-gray-500 mt-1">
+                    <div className="text-base text-inksoft mt-1">
                       {f.arr_city_name} {f.arr_airport_name}
                     </div>
                   </div>
                 </div>
 
-                <div className="mt-4 pt-3 border-t border-dashed border-gray-200 flex items-end justify-between">
+                <div className="mt-4 pt-3 border-t border-dashed border-brand/15 flex items-end justify-between">
                   <div>
-                    <span className="text-lg font-bold text-gray-700">{c.cabin_name}</span>
-                    <span className="text-base text-gray-400 ml-2">
+                    <span className="text-lg font-bold text-inksoft">{c.cabin_name}</span>
+                    <span className="text-base text-inkmute ml-2">
                       机建{yuan(c.airport_tax, false)} · 燃油{yuan(c.fuel_tax, false)}
                     </span>
                   </div>
@@ -192,7 +192,7 @@ export default function FlightList() {
                     <span className="text-4xl font-extrabold text-brand">
                       {yuan(c.lowest_price, false)}
                     </span>
-                    <span className="text-base text-gray-400 ml-1">起</span>
+                    <span className="text-base text-inkmute ml-1">起</span>
                   </div>
                 </div>
               </button>

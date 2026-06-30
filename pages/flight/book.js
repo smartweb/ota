@@ -36,7 +36,7 @@ export default function FlightBook() {
       <div className="page">
         <NavBar title="填写订单" />
         <div className="card mt-6 text-center">
-          <div className="text-lg text-gray-600 mb-4">页面已失效，请重新搜索航班</div>
+          <div className="text-lg text-inksoft mb-4">页面已失效，请重新搜索航班</div>
           <button className="btn-primary" onClick={() => router.replace("/flight")}>
             重新搜索
           </button>
@@ -181,31 +181,31 @@ export default function FlightBook() {
       {/* 航班信息卡 */}
       <div className="card mt-4">
         <div className="flex items-center justify-between">
-          <div className="text-lg font-bold text-gray-600">
+          <div className="text-lg font-bold text-inksoft">
             {sel.flight.airline_name} {sel.flight.flight_no}
           </div>
-          <div className="text-base text-gray-400">{sel.cabin.cabin_name}</div>
+          <div className="text-base text-inkmute">{sel.cabin.cabin_name}</div>
         </div>
         <div className="flex items-center justify-between mt-3">
           <div>
             <div className="text-3xl font-extrabold">{shortTime(sel.flight.dep_time)}</div>
-            <div className="text-base text-gray-500">{sel.flight.dep_city_name}</div>
+            <div className="text-base text-inksoft">{sel.flight.dep_city_name}</div>
           </div>
           <div className="text-brand text-2xl">✈️</div>
           <div className="text-right">
             <div className="text-3xl font-extrabold">{shortTime(sel.flight.arr_time)}</div>
-            <div className="text-base text-gray-500">{sel.flight.arr_city_name}</div>
+            <div className="text-base text-inksoft">{sel.flight.arr_city_name}</div>
           </div>
         </div>
-        <div className="text-base text-gray-400 mt-2">{prettyDate(sel.depart_date)}</div>
+        <div className="text-base text-inkmute mt-2">{prettyDate(sel.depart_date)}</div>
 
         {sel.cabin.refund_rule && (
-          <div className="mt-3 pt-3 border-t border-dashed border-gray-200 text-base text-gray-500">
+          <div className="mt-3 pt-3 border-t border-dashed border-brand/15 text-base text-inksoft">
             退改：{sel.cabin.refund_rule}
           </div>
         )}
         {sel.cabin.baggage_rule && (
-          <div className="text-base text-gray-500">行李：{sel.cabin.baggage_rule}</div>
+          <div className="text-base text-inksoft">行李：{sel.cabin.baggage_rule}</div>
         )}
       </div>
 
@@ -220,11 +220,11 @@ export default function FlightBook() {
       {pax.map((p, i) => (
         <div key={i} className="card mt-3">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-lg font-bold text-gray-600">乘客 {i + 1}</span>
+            <span className="text-lg font-bold text-inksoft">乘客 {i + 1}</span>
             {pax.length > 1 && (
               <button
                 onClick={() => removePax(i)}
-                className="text-base text-orange-600"
+                className="text-base text-brand-deep"
               >
                 删除
               </button>
@@ -289,7 +289,7 @@ export default function FlightBook() {
           onChange={(e) => setAgree(e.target.checked)}
           className="mt-1 w-6 h-6 accent-brand"
         />
-        <span className="text-base text-gray-500 leading-relaxed">
+        <span className="text-base text-inksoft leading-relaxed">
           我已阅读并同意《购票须知》，确认乘客信息真实有效，自愿购买该航班机票。
         </span>
       </label>
@@ -298,7 +298,7 @@ export default function FlightBook() {
       <div className="footer-bar">
         <div className="flex items-center justify-between mb-3">
           <div>
-            <div className="text-base text-gray-400">合计（{sel.adult}人）</div>
+            <div className="text-base text-inkmute">合计（{sel.adult}人）</div>
             <div className="text-brand">
               <span className="text-xl font-bold">¥</span>
               <span className="text-4xl font-extrabold">{yuan(total, false)}</span>
@@ -319,7 +319,7 @@ export default function FlightBook() {
         <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center px-6">
           <div className="bg-white rounded-3xl p-6 w-full max-w-sm text-center">
             <div className="text-2xl font-extrabold mb-2">价格有变动</div>
-            <div className="text-lg text-gray-500 mb-4">
+            <div className="text-lg text-inksoft mb-4">
               实时核价后的最终价格为
             </div>
             <div className="text-brand mb-2">
@@ -328,14 +328,14 @@ export default function FlightBook() {
                 {yuan(confirmPrice.totalFare, false)}
               </span>
             </div>
-            <div className="text-base text-gray-400 mb-6">
+            <div className="text-base text-inkmute mb-6">
               （搜索时参考价 {yuan(total, false)}，以实时价为准）
             </div>
             <button className="btn-primary mb-3" onClick={confirmAndPay}>
               确认并支付 {yuan(confirmPrice.totalFare)}
             </button>
             <button
-              className="w-full text-lg text-gray-500 py-3"
+              className="w-full text-lg text-inksoft py-3"
               onClick={() => setConfirmPrice(null)}
             >
               再想想

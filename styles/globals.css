@@ -2,29 +2,31 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ============ 老年人友好全局基础样式 ============ */
+/* ============ 适老化全局基础样式 ============
+   配色基于老年人 UI 实证研究：暖橙主色、高亮度暖背景、高对比度暖系文字。
+   避免大面积红、避免纯白冷色、避免过高饱和度。 */
+
 html {
   -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background: #fff7f3;
-  color: #1a1a1a;
+  background: #FFFBF5;
+  color: #2B2420;
   font-size: 18px;          /* 基础字号 18px */
   line-height: 1.7;
   -webkit-font-smoothing: antialiased;
-  /* 移动 H5 全局禁止文字过小 */
   text-rendering: optimizeLegibility;
 }
 
-/* 让所有可点击区域足够大、有明显反馈 */
+/* 点击区域充足、暖色调反馈 */
 button,
 a,
 [role="button"] {
-  -webkit-tap-highlight-color: rgba(217, 67, 43, 0.12);
+  -webkit-tap-highlight-color: rgba(240, 153, 90, 0.18);
 }
 
-/* 表单输入框不要 iOS 缩放，字号 >= 16px */
+/* 输入框不缩放 */
 input,
 select,
 textarea {
@@ -32,32 +34,45 @@ textarea {
 }
 
 @layer components {
-  /* 主操作按钮：大、暖橙红、固定高 */
+  /* 主操作按钮：暖橙渐变、大尺寸、柔和阴影 */
   .btn-primary {
-    @apply w-full min-h-touch bg-brand text-white text-xl font-bold rounded-2xl
-           flex items-center justify-center px-6 shadow-md
-           active:bg-brand-dark transition-colors disabled:opacity-50;
+    @apply w-full min-h-touch text-white text-xl font-bold rounded-2xl
+           flex items-center justify-center px-6
+           transition-all duration-150 disabled:opacity-50;
+    background: linear-gradient(135deg, #F4A66B 0%, #E07A38 100%);
+    box-shadow: 0 6px 16px rgba(224, 122, 56, 0.30);
   }
+  .btn-primary:active {
+    background: linear-gradient(135deg, #E07A38 0%, #C2621F 100%);
+    box-shadow: 0 3px 8px rgba(224, 122, 56, 0.25);
+    transform: translateY(1px);
+  }
+  /* 次要按钮：白底橙边 */
   .btn-secondary {
-    @apply w-full min-h-touch bg-white text-ink text-xl font-bold rounded-2xl
-           border-2 border-brand px-6
-           active:bg-brand-light transition-colors disabled:opacity-50;
+    @apply w-full min-h-touch bg-white text-brand-deep text-xl font-bold rounded-2xl
+           border-2 border-brand px-6 transition-all duration-150 disabled:opacity-50;
+    box-shadow: 0 2px 8px rgba(224, 122, 56, 0.08);
+  }
+  .btn-secondary:active {
+    @apply bg-brand-light;
   }
   .btn-ghost {
-    @apply min-h-touch px-5 bg-brand-light text-brand-dark text-lg font-bold rounded-xl
-           active:bg-brand/20 transition-colors;
+    @apply min-h-touch px-5 bg-brand-light text-brand-deep text-lg font-bold rounded-xl
+           active:bg-brand-softer transition-colors;
   }
 
-  /* 卡片 */
+  /* 卡片：白底、柔和暖色阴影、圆角 */
   .card {
-    @apply bg-white rounded-2xl shadow-sm border border-black/5 p-5;
+    @apply bg-white rounded-2xl p-5;
+    box-shadow: 0 2px 12px rgba(180, 140, 100, 0.08);
+    border: 1px solid rgba(240, 153, 90, 0.08);
   }
 
-  /* 大输入框 */
+  /* 大输入框：暖色调聚焦 */
   .input-lg {
-    @apply w-full min-h-touch bg-gray-50 border-2 border-gray-200 rounded-xl
-           px-4 text-lg text-ink placeholder:text-gray-400
-           focus:border-brand focus:bg-white outline-none transition-colors;
+    @apply w-full min-h-touch bg-paperdeep border-2 border-transparent rounded-xl
+           px-4 text-lg text-ink placeholder:text-inkmute
+           focus:border-brand focus:bg-white outline-none transition-all;
   }
 
   /* 标签徽标 */
@@ -65,39 +80,42 @@ textarea {
     @apply inline-flex items-center px-3 py-1 rounded-full text-base font-semibold;
   }
 
-  /* 状态徽标颜色 */
+  /* 状态徽标颜色（暖色系，避免刺眼纯红） */
   .status-pending {
     @apply bg-orange-100 text-orange-700;
   }
   .status-paid {
-    @apply bg-blue-100 text-blue-700;
+    @apply bg-sky-100 text-sky-700;
   }
   .status-success {
-    @apply bg-green-100 text-green-700;
+    @apply bg-emerald-100 text-emerald-700;
   }
   .status-cancel {
-    @apply bg-gray-200 text-gray-600;
+    @apply bg-stone-200 text-stone-600;
   }
   .status-warn {
-    @apply bg-red-100 text-red-700;
+    @apply bg-amber-100 text-amber-800;
   }
 
-  /* 页面容器：移动端最大宽 480，桌面居中 */
+  /* 页面容器 */
   .page {
     @apply mx-auto max-w-[480px] min-h-screen bg-paper px-4 pb-28;
   }
 
-  /* 底部固定操作栏 */
+  /* 底部固定操作栏：暖色柔和阴影 */
   .footer-bar {
     @apply fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px]
-           bg-white border-t border-black/10 px-4 py-3
-           shadow-[0_-4px_16px_rgba(0,0,0,0.06)];
+           bg-white/95 backdrop-blur px-4 py-3;
+    box-shadow: 0 -4px 20px rgba(180, 140, 100, 0.10);
+    border-top: 1px solid rgba(240, 153, 90, 0.08);
   }
 }
 
-/* 顶部导航简化 */
+/* 顶部导航：暖橙渐变 */
 .nav-bar {
-  @apply sticky top-0 z-20 bg-brand text-white px-4 py-4 flex items-center gap-3;
+  @apply sticky top-0 z-20 text-white px-4 py-4 flex items-center gap-3;
+  background: linear-gradient(135deg, #F4A66B 0%, #E07A38 100%);
+  box-shadow: 0 2px 12px rgba(224, 122, 56, 0.18);
 }
 .nav-bar .nav-title {
   @apply text-xl font-bold flex-1 text-center pr-7;

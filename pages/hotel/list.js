@@ -58,7 +58,7 @@ export default function HotelList() {
     <div className="page">
       <NavBar title={`酒店 · ${destination || ""}`} />
       <div className="px-1 pt-4 pb-2 flex items-center justify-between">
-        <div className="text-lg text-gray-600">
+        <div className="text-lg text-inksoft">
           {prettyDate(check_in)} - {prettyDate(check_out)}
         </div>
         <div className="flex gap-2">
@@ -71,7 +71,7 @@ export default function HotelList() {
               key={s.k}
               onClick={() => setSortBy(s.k)}
               className={`px-4 py-2 rounded-full text-base font-bold ${
-                sortBy === s.k ? "bg-brand text-white" : "bg-gray-100 text-gray-600"
+                sortBy === s.k ? "bg-brand text-white" : "bg-paperdeep text-inksoft"
               }`}
             >
               {s.t}
@@ -81,7 +81,7 @@ export default function HotelList() {
       </div>
 
       {loading && <Loading text="正在查找酒店…" />}
-      {!loading && err && <div className="card mt-4 text-center text-orange-600 text-lg">{err}</div>}
+      {!loading && err && <div className="card mt-4 text-center text-brand-deep text-lg">{err}</div>}
       {!loading && !err && hotels.length === 0 && <Empty text="没有找到合适的酒店" icon="🏨" />}
 
       {!loading && !err && hotels.length > 0 && (
@@ -102,7 +102,7 @@ export default function HotelList() {
                       <span className="badge bg-blue-50 text-blue-700">{starTag(h.star_tag)}</span>
                     )}
                     {typeof h.star_rating === "number" && h.star_rating > 0 && (
-                      <span className="text-base text-orange-500">★ {h.star_rating}</span>
+                      <span className="text-base text-brand-deep">★ {h.star_rating}</span>
                     )}
                     {h.scene_tags && h.scene_tags.length > 0 && (
                       <span className="badge bg-green-50 text-green-700">
@@ -111,22 +111,22 @@ export default function HotelList() {
                     )}
                   </div>
                   {h.address && (
-                    <div className="text-base text-gray-500 mt-2">📍 {h.address}</div>
+                    <div className="text-base text-inksoft mt-2">📍 {h.address}</div>
                   )}
                   {typeof h.distance_km === "number" && (
-                    <div className="text-base text-gray-400 mt-1">
+                    <div className="text-base text-inkmute mt-1">
                       距您 {h.distance_km.toFixed(1)} 公里
                     </div>
                   )}
                 </div>
               </div>
-              <div className="mt-3 pt-3 border-t border-dashed border-gray-200 flex items-end justify-end">
+              <div className="mt-3 pt-3 border-t border-dashed border-brand/15 flex items-end justify-end">
                 <div className="text-right">
-                  <span className="text-base text-gray-400">¥</span>
+                  <span className="text-base text-inkmute">¥</span>
                   <span className="text-4xl font-extrabold text-brand">
                     {yuan(h.min_price, false)}
                   </span>
-                  <span className="text-base text-gray-400 ml-1">/晚 起</span>
+                  <span className="text-base text-inkmute ml-1">/晚 起</span>
                 </div>
               </div>
             </button>

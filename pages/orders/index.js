@@ -88,7 +88,7 @@ export default function Orders() {
       <NavBar title="我的订单" />
 
       <div className="card mt-4">
-        <div className="text-base text-gray-500 mb-2">输入下单时填写的手机号查看订单</div>
+        <div className="text-base text-inksoft mb-2">输入下单时填写的手机号查看订单</div>
         <div className="flex gap-3">
           <input
             className="input-lg flex-1"
@@ -102,7 +102,7 @@ export default function Orders() {
             查询
           </button>
         </div>
-        {err && <div className="text-orange-600 text-base mt-2">{err}</div>}
+        {err && <div className="text-brand-deep text-base mt-2">{err}</div>}
       </div>
 
       {loading && <Loading text="正在查找订单…" />}
@@ -125,15 +125,15 @@ export default function Orders() {
                 className="card w-full text-left active:scale-[0.99] transition-transform"
               >
                 <div className="flex items-center justify-between mb-2">
-                  <span className="badge bg-gray-100 text-gray-600">
+                  <span className="badge bg-paperdeep text-inksoft">
                     {o.type === "flight" ? "✈️ 机票" : "🏨 酒店"}
                   </span>
                   <span className={`badge ${st.cls}`}>{st.text}</span>
                 </div>
                 <div className="text-2xl font-extrabold text-ink">{o.title}</div>
-                <div className="text-base text-gray-500 mt-1">{o.sub}</div>
-                <div className="mt-3 pt-3 border-t border-dashed border-gray-200 flex items-center justify-between">
-                  <span className="text-base text-gray-400">
+                <div className="text-base text-inksoft mt-1">{o.sub}</div>
+                <div className="mt-3 pt-3 border-t border-dashed border-brand/15 flex items-center justify-between">
+                  <span className="text-base text-inkmute">
                     {o.created_at ? `下单 ${o.created_at.slice(0, 10)}` : ""}
                   </span>
                   <span className="text-brand text-2xl font-extrabold">{yuan(o.amount)}</span>
@@ -145,7 +145,7 @@ export default function Orders() {
       )}
 
       {!queried && (
-        <div className="card mt-6 text-center text-gray-400 text-lg">
+        <div className="card mt-6 text-center text-inkmute text-lg">
           输入手机号，查看您的机票和酒店订单
         </div>
       )}

@@ -32,7 +32,7 @@ export default function HotelSearch() {
       <NavBar title="订酒店" />
       <div className="pt-6 space-y-5">
         <div className="card">
-          <div className="text-base text-gray-500 mb-2">目的地 / 酒店名</div>
+          <div className="text-base text-inksoft mb-2">目的地 / 酒店名</div>
           <input
             className="input-lg"
             placeholder="如 杭州西湖、北京天安门"
@@ -43,7 +43,7 @@ export default function HotelSearch() {
 
         <div className="card space-y-4">
           <div>
-            <div className="text-base text-gray-500 mb-2">入住日期</div>
+            <div className="text-base text-inksoft mb-2">入住日期</div>
             <input
               type="date"
               value={checkIn}
@@ -63,7 +63,7 @@ export default function HotelSearch() {
             />
           </div>
           <div>
-            <div className="text-base text-gray-500 mb-2">离店日期</div>
+            <div className="text-base text-inksoft mb-2">离店日期</div>
             <input
               type="date"
               value={checkOut}
@@ -80,13 +80,13 @@ export default function HotelSearch() {
         </div>
 
         <div className="card">
-          <div className="text-base text-gray-500 mb-3">房间数</div>
+          <div className="text-base text-inksoft mb-3">房间数</div>
           <div className="flex items-center justify-between">
             <span className="text-xl font-bold">房间</span>
             <div className="flex items-center gap-4">
               <button
                 onClick={() => setRoomCount((n) => Math.max(1, n - 1))}
-                className="w-12 h-12 rounded-full bg-gray-100 text-3xl font-bold active:bg-gray-200"
+                className="w-12 h-12 rounded-full bg-paperdeep text-3xl font-bold active:bg-paperdeep"
               >
                 −
               </button>

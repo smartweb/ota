@@ -27,13 +27,13 @@ export default function PayReturn() {
       <div className="text-center pt-16">
         <div className="text-7xl mb-4">✅</div>
         <div className="text-3xl font-extrabold">付款已提交</div>
-        <div className="text-lg text-gray-500 mt-3 px-8">
+        <div className="text-lg text-inksoft mt-3 px-8">
           支付结果可能稍有延迟，可在「我的订单」查看最新状态。机票出票、酒店确认一般需要几分钟。
         </div>
 
         {last && (
           <div className="card mt-8 text-left">
-            <div className="text-lg text-gray-500">
+            <div className="text-lg text-inksoft">
               {last.type === "flight" ? "✈️ 机票订单" : "🏨 酒店订单"}
             </div>
             <div className="text-2xl font-extrabold mt-1">¥{last.total_amount}</div>

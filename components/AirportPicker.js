@@ -50,9 +50,9 @@ export default function AirportPicker({ value, onChange, placeholder }) {
     return (
       <button
         onClick={() => setOpen(true)}
-        className="w-full min-h-touch bg-gray-50 border-2 border-gray-200 rounded-xl px-4 flex items-center justify-between active:bg-gray-100"
+        className="w-full min-h-touch bg-paperdeep border-2 border-brand/15 rounded-xl px-4 flex items-center justify-between active:bg-paperdeep"
       >
-        <span className={value ? "text-xl font-bold text-ink" : "text-lg text-gray-400"}>
+        <span className={value ? "text-xl font-bold text-ink" : "text-lg text-inkmute"}>
           {value ? value.city || value.label : placeholder}
         </span>
         <span className="text-brand text-base font-semibold">选择 ›</span>
@@ -66,9 +66,9 @@ export default function AirportPicker({ value, onChange, placeholder }) {
         className="bg-white w-full rounded-t-3xl max-h-[75vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="p-4 border-b border-gray-100">
+        <div className="p-4 border-b border-brand/10">
           <div className="flex items-center gap-3 mb-3">
-            <button onClick={() => setOpen(false)} className="text-gray-400 text-lg">
+            <button onClick={() => setOpen(false)} className="text-inkmute text-lg">
               ✕
             </button>
             <span className="text-xl font-bold flex-1">{placeholder}</span>
@@ -82,21 +82,21 @@ export default function AirportPicker({ value, onChange, placeholder }) {
           />
         </div>
         <div className="overflow-y-auto flex-1">
-          {loading && <div className="text-center py-8 text-gray-400 text-lg">查询中…</div>}
+          {loading && <div className="text-center py-8 text-inkmute text-lg">查询中…</div>}
           {!loading && kw.trim() && list.length === 0 && (
-            <div className="text-center py-8 text-gray-400 text-lg">没有找到，换个关键词</div>
+            <div className="text-center py-8 text-inkmute text-lg">没有找到，换个关键词</div>
           )}
           {!loading &&
             list.map((item, i) => (
               <button
                 key={i}
                 onClick={() => pick(item)}
-                className="w-full text-left px-5 py-4 border-b border-gray-50 active:bg-brand-light flex items-center justify-between"
+                className="w-full text-left px-5 py-4 border-b border-brand/10 active:bg-brand-light flex items-center justify-between"
               >
                 <div>
                   <div className="text-xl font-bold text-ink">
                     {item.city_name || item.city}
-                    <span className="text-gray-400 text-base font-normal ml-2">
+                    <span className="text-inkmute text-base font-normal ml-2">
                       {item.name || item.airport_name}
                     </span>
                   </div>

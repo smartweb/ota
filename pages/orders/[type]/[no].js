@@ -70,7 +70,7 @@ export default function OrderDetail() {
     return (
       <div className="page">
         <NavBar title="订单详情" />
-        <div className="card mt-6 text-center text-orange-600 text-lg">{err}</div>
+        <div className="card mt-6 text-center text-brand-deep text-lg">{err}</div>
       </div>
     );
   }
@@ -122,12 +122,12 @@ export default function OrderDetail() {
         <div className={`badge ${st.cls} text-xl px-5 py-2`}>{st.text}</div>
         {order.total_amount !== undefined && (
           <div className="mt-3">
-            <span className="text-base text-gray-400">金额 </span>
+            <span className="text-base text-inkmute">金额 </span>
             <span className="text-brand text-4xl font-extrabold">{yuan(order.total_amount)}</span>
           </div>
         )}
         {canPay && order.pay_expire_time && (
-          <div className="text-base text-orange-600 mt-2">
+          <div className="text-base text-brand-deep mt-2">
             请在 {order.pay_expire_time} 前完成支付
           </div>
         )}
@@ -139,7 +139,7 @@ export default function OrderDetail() {
           {order.flight_info && (
             <div className="card mt-4">
               <div className="text-xl font-extrabold mb-3">航班信息</div>
-              <div className="text-lg font-bold text-gray-600">
+              <div className="text-lg font-bold text-inksoft">
                 {order.flight_info.airline_name || order.airline} {order.flight_info.flight_no}
               </div>
               <div className="flex items-center justify-between mt-3">
@@ -147,7 +147,7 @@ export default function OrderDetail() {
                   <div className="text-3xl font-extrabold">
                     {shortTime(order.flight_info.dep_time || order.flight_info.depart_time)}
                   </div>
-                  <div className="text-base text-gray-500">
+                  <div className="text-base text-inksoft">
                     {order.flight_info.dep_city_name || order.flight_info.dep_city || order.flight_info.dep_airport_name}
                   </div>
                 </div>
@@ -156,12 +156,12 @@ export default function OrderDetail() {
                   <div className="text-3xl font-extrabold">
                     {shortTime(order.flight_info.arr_time)}
                   </div>
-                  <div className="text-base text-gray-500">
+                  <div className="text-base text-inksoft">
                     {order.flight_info.arr_city_name || order.flight_info.arr_city || order.flight_info.arr_airport_name}
                   </div>
                 </div>
               </div>
-              <div className="text-base text-gray-400 mt-2">
+              <div className="text-base text-inkmute mt-2">
                 {order.flight_info.cabin_class ? (["economy","business","first"].includes(order.flight_info.cabin_class) ? cabinClassText(order.flight_info.cabin_class) : order.flight_info.cabin_class) : ""}
                 {order.flight_info.dep_time ? ` · ${prettyDate(order.flight_info.dep_time.slice(0, 10))}` : ""}
               </div>
@@ -172,9 +172,9 @@ export default function OrderDetail() {
             <div className="card mt-4">
               <div className="text-xl font-extrabold mb-3">乘机人</div>
               {order.passengers.map((p, i) => (
-                <div key={i} className="flex items-center justify-between py-2 border-b last:border-0 border-gray-50">
+                <div key={i} className="flex items-center justify-between py-2 border-b last:border-0 border-brand/10">
                   <span className="text-lg font-bold">{p.name}</span>
-                  <span className="text-base text-gray-500">
+                  <span className="text-base text-inksoft">
                     {p.id_type === "ID_CARD" ? "身份证" : "证件"} {p.id_number?.slice(-4)}
                   </span>
                 </div>
@@ -184,7 +184,7 @@ export default function OrderDetail() {
 
           {order.pnr && (
             <div className="card mt-4 flex items-center justify-between">
-              <span className="text-lg text-gray-600">订座编码</span>
+              <span className="text-lg text-inksoft">订座编码</span>
               <span className="text-xl font-extrabold tracking-widest">{order.pnr}</span>
             </div>
           )}
@@ -196,16 +196,16 @@ export default function OrderDetail() {
         <>
           <div className="card mt-4">
             <div className="text-xl font-extrabold">{order.hotel_name}</div>
-            {order.room_name && <div className="text-lg text-gray-600 mt-1">{order.room_name}</div>}
-            <div className="mt-3 pt-3 border-t border-dashed border-gray-200 flex items-center justify-between text-lg">
-              <span className="text-gray-500">入住</span>
+            {order.room_name && <div className="text-lg text-inksoft mt-1">{order.room_name}</div>}
+            <div className="mt-3 pt-3 border-t border-dashed border-brand/15 flex items-center justify-between text-lg">
+              <span className="text-inksoft">入住</span>
               <span className="font-bold">{prettyDate(order.check_in)}</span>
             </div>
             <div className="flex items-center justify-between text-lg mt-2">
-              <span className="text-gray-500">离店</span>
+              <span className="text-inksoft">离店</span>
               <span className="font-bold">{prettyDate(order.check_out)}</span>
             </div>
-            <div className="flex items-center justify-between text-base text-gray-400 mt-2">
+            <div className="flex items-center justify-between text-base text-inkmute mt-2">
               <span>共 {order.nights} 晚 · {order.room_count} 间</span>
             </div>
           </div>
@@ -224,7 +224,7 @@ export default function OrderDetail() {
       {/* 联系人 */}
       {order.contact && (
         <div className="card mt-4 flex items-center justify-between">
-          <span className="text-lg text-gray-600">联系人</span>
+          <span className="text-lg text-inksoft">联系人</span>
           <span className="text-lg font-bold">
             {order.contact.name} {order.contact.phone}
           </span>
@@ -235,7 +235,7 @@ export default function OrderDetail() {
       {isFlight && order.refund_rule && (
         <div className="card mt-4">
           <div className="text-lg font-bold mb-2">退改规则</div>
-          <div className="text-base text-gray-500 leading-relaxed whitespace-pre-line">
+          <div className="text-base text-inksoft leading-relaxed whitespace-pre-line">
             {typeof order.refund_rule === "string"
               ? order.refund_rule
               : order.refund_rule.current?.summary || JSON.stringify(order.refund_rule)}
@@ -246,7 +246,7 @@ export default function OrderDetail() {
       {/* 操作：选择支付方式 */}
       {canPay && (
         <div className="footer-bar">
-          <div className="text-center text-base text-gray-400 mb-2">
+          <div className="text-center text-base text-inkmute mb-2">
             应付 <span className="text-brand font-bold">{yuan(order.total_amount)}</span> · 选择支付方式
           </div>
           <div className="flex gap-3">
@@ -268,7 +268,7 @@ export default function OrderDetail() {
         </div>
       )}
 
-      <div className="text-center text-gray-400 text-base mt-8">
+      <div className="text-center text-inkmute text-base mt-8">
         {isFlight ? `订单号 ${order.system_no}` : `订单号 ${order.order_no}`}
       </div>
     </div>

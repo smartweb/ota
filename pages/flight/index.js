@@ -37,10 +37,10 @@ export default function FlightSearch() {
       <div className="pt-6 space-y-5">
         {/* 出发 / 到达 */}
         <div className="card relative">
-          <div className="text-base text-gray-500 mb-2">出发城市</div>
+          <div className="text-base text-inksoft mb-2">出发城市</div>
           <AirportPicker value={from} onChange={setFrom} placeholder="选择出发城市" />
-          <div className="my-4 border-t border-dashed border-gray-200" />
-          <div className="text-base text-gray-500 mb-2">到达城市</div>
+          <div className="my-4 border-t border-dashed border-brand/15" />
+          <div className="text-base text-inksoft mb-2">到达城市</div>
           <AirportPicker value={to} onChange={setTo} placeholder="选择到达城市" />
           {/* 交换按钮 */}
           <button
@@ -54,7 +54,7 @@ export default function FlightSearch() {
 
         {/* 出发日期 */}
         <div className="card">
-          <div className="text-base text-gray-500 mb-2">出发日期</div>
+          <div className="text-base text-inksoft mb-2">出发日期</div>
           <input
             type="date"
             value={departDate}
@@ -66,13 +66,13 @@ export default function FlightSearch() {
 
         {/* 人数 */}
         <div className="card">
-          <div className="text-base text-gray-500 mb-3">乘客人数</div>
+          <div className="text-base text-inksoft mb-3">乘客人数</div>
           <div className="flex items-center justify-between">
             <span className="text-xl font-bold">成人</span>
             <div className="flex items-center gap-4">
               <button
                 onClick={() => setAdult((n) => Math.max(1, n - 1))}
-                className="w-12 h-12 rounded-full bg-gray-100 text-3xl font-bold text-ink active:bg-gray-200"
+                className="w-12 h-12 rounded-full bg-paperdeep text-3xl font-bold text-ink active:bg-paperdeep"
               >
                 −
               </button>
@@ -88,7 +88,7 @@ export default function FlightSearch() {
         </div>
 
         {!canSearch && from && to && from.code === to.code && (
-          <div className="text-center text-orange-600 text-lg">出发和到达不能是同一个城市</div>
+          <div className="text-center text-brand-deep text-lg">出发和到达不能是同一个城市</div>
         )}
 
         <div className="footer-bar">

@@ -27,7 +27,7 @@ export default function HotelBook() {
       <div className="page">
         <NavBar title="填写订单" />
         <div className="card mt-6 text-center">
-          <div className="text-lg text-gray-600 mb-4">页面已失效，请重新搜索酒店</div>
+          <div className="text-lg text-inksoft mb-4">页面已失效，请重新搜索酒店</div>
           <button className="btn-primary" onClick={() => router.replace("/hotel")}>
             重新搜索
           </button>
@@ -93,16 +93,16 @@ export default function HotelBook() {
       {/* 酒店信息 */}
       <div className="card mt-4">
         <div className="text-2xl font-extrabold">{sel.hotel_name}</div>
-        {sel.hotel_addr && <div className="text-base text-gray-500 mt-1">📍 {sel.hotel_addr}</div>}
-        <div className="mt-3 pt-3 border-t border-dashed border-gray-200">
+        {sel.hotel_addr && <div className="text-base text-inksoft mt-1">📍 {sel.hotel_addr}</div>}
+        <div className="mt-3 pt-3 border-t border-dashed border-brand/15">
           <div className="text-lg font-bold">{sel.room_name}</div>
-          <div className="text-base text-gray-500">
+          <div className="text-base text-inksoft">
             {bedTypeText(sel.bed_type)}
             {sel.area ? ` · ${sel.area}㎡` : ""}
           </div>
         </div>
-        <div className="mt-3 pt-3 border-t border-dashed border-gray-200 flex items-center justify-between">
-          <div className="text-base text-gray-500">
+        <div className="mt-3 pt-3 border-t border-dashed border-brand/15 flex items-center justify-between">
+          <div className="text-base text-inksoft">
             {prettyDate(sel.check_in)} - {prettyDate(sel.check_out)}
           </div>
           <div className="text-lg font-bold">
@@ -110,7 +110,7 @@ export default function HotelBook() {
           </div>
         </div>
         {sel.product.cancel_policy && (
-          <div className="text-base text-gray-500 mt-2">取消政策：{sel.product.cancel_policy}</div>
+          <div className="text-base text-inksoft mt-2">取消政策：{sel.product.cancel_policy}</div>
         )}
       </div>
 
@@ -124,9 +124,9 @@ export default function HotelBook() {
       {guests.map((g, i) => (
         <div key={i} className="card mt-3">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-lg font-bold text-gray-600">入住人 {i + 1}</span>
+            <span className="text-lg font-bold text-inksoft">入住人 {i + 1}</span>
             {guests.length > 1 && (
-              <button onClick={() => removeGuest(i)} className="text-base text-orange-600">
+              <button onClick={() => removeGuest(i)} className="text-base text-brand-deep">
                 删除
               </button>
             )}
@@ -159,7 +159,7 @@ export default function HotelBook() {
           onChange={(e) => setContact({ ...contact, phone: e.target.value })}
         />
         <div>
-          <div className="text-base text-gray-500 mb-2">预计到店时间</div>
+          <div className="text-base text-inksoft mb-2">预计到店时间</div>
           <select className="input-lg" value={arrival} onChange={(e) => setArrival(e.target.value)}>
             {["12:00", "14:00", "16:00", "18:00", "20:00", "22:00"].map((t) => (
               <option key={t} value={t}>
@@ -183,7 +183,7 @@ export default function HotelBook() {
           onChange={(e) => setAgree(e.target.checked)}
           className="mt-1 w-6 h-6 accent-brand"
         />
-        <span className="text-base text-gray-500 leading-relaxed">
+        <span className="text-base text-inksoft leading-relaxed">
           我已阅读并同意《预订须知》，确认入住信息真实有效。
         </span>
       </label>
@@ -191,7 +191,7 @@ export default function HotelBook() {
       <div className="footer-bar">
         <div className="flex items-center justify-between mb-3">
           <div>
-            <div className="text-base text-gray-400">合计</div>
+            <div className="text-base text-inkmute">合计</div>
             <div className="text-brand">
               <span className="text-xl font-bold">¥</span>
               <span className="text-4xl font-extrabold">{yuan(total, false)}</span>
