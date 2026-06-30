@@ -196,7 +196,7 @@ export default function FlightList() {
                   </div>
                 </div>
 
-                {/* 行李规则 + 退票提示：预订前接口不返回具体退票费，如实告知 */}
+                {/* 行李规则 + 退票提示 */}
                 <div
                   className="mt-3 rounded-xl px-3 py-2 text-base flex items-start gap-2"
                   style={{ background: "#FFF7ED" }}
@@ -204,7 +204,15 @@ export default function FlightList() {
                   <span className="shrink-0">📌</span>
                   <div className="text-inksoft leading-snug">
                     {c.baggage_rule && <div>行李：{c.baggage_rule}</div>}
-                    <div>退票规则：下单后可在订单详情中查看具体退票手续费</div>
+                    <div className="mt-0.5">
+                      <span className="font-bold">退改：</span>
+                      {c.discount_rate >= 3.5
+                        ? "票价较高，退改手续费相对较低"
+                        : c.discount_rate >= 2.5
+                        ? "折扣票，退票有手续费，起飞越早扣得越多"
+                        : "特价票，退票费较高，部分可能不可退"}
+                      <span className="text-inkmute">（点开可查具体退票金额）</span>
+                    </div>
                   </div>
                 </div>
               </button>

@@ -30,6 +30,8 @@ export default function FlightBook() {
   const [submitting, setSubmitting] = useState(false);
   // 实时价格确认弹窗：价格变动时让用户看到最终价再继续下单
   const [confirmPrice, setConfirmPrice] = useState(null); // { offerId, totalFare }
+  // 支付前确认弹窗：展示金额+退票规则，用户确认后跳收银台
+  const [payConfirm, setPayConfirm] = useState(null);
 
   if (!sel) {
     return (
@@ -124,7 +126,7 @@ export default function FlightBook() {
     }
   };
 
-  // 用已验价的 offer_id 创建订单并跳转收银台
+  // 用已验价的 offer_id 创建订单，查退票规则，确认后跳转收银台
   const createOrderAndPay = async (offerId, passengers) => {
     setSubmitting(true);
     try {
@@ -134,9 +136,9 @@ export default function FlightBook() {
         contact: { name: contact.name, phone: contact.phone },
         external_user_id: contact.phone,
       });
-      setSubmitting(false);
 
       if (!cr.ok) {
+        setSubmitting(false);
         toast(cr.message || "下单失败，请重试");
         return;
       }
@@ -147,15 +149,36 @@ export default function FlightBook() {
         JSON.stringify({ type: "flight", system_no: order.system_no, total_amount: order.total_amount })
       );
 
-      if (order.checkout_url) {
-        window.location.href = order.checkout_url;
-      } else {
-        toast("订单已创建，正在跳转支付…");
-        setTimeout(() => router.replace(`/orders/flight/${order.system_no}`), 1500);
+      // 下单成功后立即查退票规则，支付前展示给用户
+      let refundInfo = null;
+      const fr = await api("/api/flight/order/cancel-fee", { order_id: order.system_no });
+      if (fr.ok && fr.data) {
+        refundInfo = fr.data;
       }
+
+      setSubmitting(false);
+
+      // 弹出支付确认：展示金额 + 退票规则，用户确认后再跳支付
+      setPayConfirm({
+        checkoutUrl: order.checkout_url,
+        systemNo: order.system_no,
+        totalAmount: order.total_amount,
+        refundInfo,
+      });
     } catch (e) {
       setSubmitting(false);
       toast("下单异常，请重试");
+    }
+  };
+
+  // 支付确认弹窗 → 用户确认后跳收银台
+  const goToCheckout = () => {
+    const pc = payConfirm;
+    setPayConfirm(null);
+    if (pc && pc.checkoutUrl) {
+      window.location.href = pc.checkoutUrl;
+    } else if (pc && pc.systemNo) {
+      router.replace(`/orders/flight/${pc.systemNo}`);
     }
   };
 
@@ -205,9 +228,9 @@ export default function FlightBook() {
         >
           <span className="shrink-0 text-lg">📌</span>
           <div className="text-inksoft leading-relaxed">
-            <div className="font-bold text-ink mb-1">退改与行李说明</div>
+            <div className="font-bold text-ink mb-1">行李与退改说明</div>
             {sel.cabin.baggage_rule && <div>行李：{sel.cabin.baggage_rule}</div>}
-            <div>退票规则：下单后可在订单详情中查看具体退票手续费</div>
+            <div>点「去支付」后会显示完整的退票规则和手续费，确认后再付款。</div>
           </div>
         </div>
       </div>
@@ -340,6 +363,86 @@ export default function FlightBook() {
             <button
               className="w-full text-lg text-inksoft py-3"
               onClick={() => setConfirmPrice(null)}
+            >
+              再想想
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* 支付前确认弹窗：展示金额 + 退票规则，用户确认后再跳收银台 */}
+      {payConfirm && (
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center px-6">
+          <div className="bg-white rounded-3xl p-6 w-full max-w-sm">
+            <div className="text-2xl font-extrabold text-center mb-4">确认支付信息</div>
+
+            <div className="text-center mb-4">
+              <div className="text-base text-inkmute">应付金额</div>
+              <div className="text-brand">
+                <span className="text-2xl font-bold">¥</span>
+                <span className="text-5xl font-extrabold">
+                  {yuan(payConfirm.totalAmount, false)}
+                </span>
+              </div>
+            </div>
+
+            {/* 退票规则：支付前清楚展示 */}
+            <div
+              className="rounded-xl px-4 py-3 text-base mb-4"
+              style={{ background: "#FFF7ED" }}
+            >
+              <div className="font-bold text-ink mb-2 flex items-center gap-1">
+                <span>📌</span> 退票规则
+              </div>
+              {payConfirm.refundInfo ? (
+                <>
+                  <div className="text-inksoft leading-relaxed mb-2">
+                    {payConfirm.refundInfo.refund_rule || "—"}
+                  </div>
+                  <div className="flex items-center justify-between text-base">
+                    <span className="text-inksoft">是否可退</span>
+                    <span
+                      className={
+                        payConfirm.refundInfo.refundable
+                          ? "text-emerald-600 font-bold"
+                          : "text-amber-700 font-bold"
+                      }
+                    >
+                      {payConfirm.refundInfo.refundable ? "✅ 可退票" : "⚠️ 不可退"}
+                    </span>
+                  </div>
+                  {payConfirm.refundInfo.refundable && (
+                    <div className="flex items-center justify-between text-base mt-1">
+                      <span className="text-inksoft">可退金额</span>
+                      <span className="text-brand font-extrabold">
+                        {yuan(payConfirm.refundInfo.refund_amount)}
+                      </span>
+                    </div>
+                  )}
+                  {payConfirm.refundInfo.cancel_fee > 0 && (
+                    <div className="flex items-center justify-between text-base mt-1">
+                      <span className="text-inksoft">手续费</span>
+                      <span className="text-inksoft font-bold">
+                        {yuan(payConfirm.refundInfo.cancel_fee)}
+                      </span>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className="text-inksoft">暂未查到退票规则，支付后可在订单详情查看。</div>
+              )}
+            </div>
+
+            <div className="text-base text-inkmute mb-5 text-center">
+              确认后将跳转到支付页面
+            </div>
+
+            <button className="btn-primary mb-3" onClick={goToCheckout}>
+              确认并去支付
+            </button>
+            <button
+              className="w-full text-lg text-inksoft py-3"
+              onClick={() => setPayConfirm(null)}
             >
               再想想
             </button>
