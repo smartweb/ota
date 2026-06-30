@@ -28,6 +28,8 @@ export default function FlightBook() {
   const [contact, setContact] = useState({ name: "", phone: "" });
   const [agree, setAgree] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  // 实时价格确认弹窗：价格变动时让用户看到最终价再继续下单
+  const [confirmPrice, setConfirmPrice] = useState(null); // { offerId, totalFare }
 
   if (!sel) {
     return (
@@ -77,22 +79,26 @@ export default function FlightBook() {
     }
     setSubmitting(true);
 
-    // 1. 如果需要验价，先验价换取 offer_id
-    let offerId = sel.offer_id;
+    // 先构造完整的乘客信息数组（验价和下单都需要）
+    const passengers = pax.map((p) => ({
+      type: "adult",
+      name: p.name,
+      id_type: p.id_type,
+      id_number: p.id_number,
+      phone: p.phone || contact.phone,
+    }));
+
     try {
+      // 1. 如果需要验价，用完整乘客信息去换 offer_id
+      let offerId = sel.offer_id;
       if (!offerId || sel.pricing_required !== false) {
         toast("正在确认最新价格…", 1500);
         const pr = await api("/api/flight/pricing", {
           search_offer_id: sel.search_offer_id,
-          passengers: { adult: sel.adult, child: 0, infant: 0 },
+          passengers,
         });
         if (!pr.ok) {
           toast(pr.message || "价格确认失败，请重试");
-          setSubmitting(false);
-          return;
-        }
-        if (pr.data.price_changed) {
-          toast("价格有变动，请确认后再次提交");
           setSubmitting(false);
           return;
         }
@@ -102,22 +108,32 @@ export default function FlightBook() {
           setSubmitting(false);
           return;
         }
+        // 价格有变动 → 弹出确认框，让用户看到最终价后再下单
+        if (pr.data.price_changed) {
+          setSubmitting(false);
+          setConfirmPrice({ offerId, totalFare: pr.data.total_fare });
+          return;
+        }
       }
 
-      // 2. 创建订单（user_pay 模式）
+      // 价格未变动（或可直下），直接下单
+      await createOrderAndPay(offerId, passengers);
+    } catch (e) {
+      setSubmitting(false);
+      toast("下单异常，请重试");
+    }
+  };
+
+  // 用已验价的 offer_id 创建订单并跳转收银台
+  const createOrderAndPay = async (offerId, passengers) => {
+    setSubmitting(true);
+    try {
       const cr = await api("/api/flight/order/create", {
         offer_id: offerId,
-        passengers: pax.map((p) => ({
-          type: "adult",
-          name: p.name,
-          id_type: p.id_type,
-          id_number: p.id_number,
-          phone: p.phone || contact.phone,
-        })),
+        passengers,
         contact: { name: contact.name, phone: contact.phone },
-        external_user_id: contact.phone, // 用手机号作为接入方用户标识，便于订单查询
+        external_user_id: contact.phone,
       });
-
       setSubmitting(false);
 
       if (!cr.ok) {
@@ -126,13 +142,11 @@ export default function FlightBook() {
       }
 
       const order = cr.data;
-      // 记下订单号，支付返回后查询
       sessionStorage.setItem(
         "last_order",
         JSON.stringify({ type: "flight", system_no: order.system_no, total_amount: order.total_amount })
       );
 
-      // 3. 跳转托管收银台
       if (order.checkout_url) {
         window.location.href = order.checkout_url;
       } else {
@@ -143,6 +157,19 @@ export default function FlightBook() {
       setSubmitting(false);
       toast("下单异常，请重试");
     }
+  };
+
+  // 价格确认弹窗 → 用户确认后继续下单
+  const confirmAndPay = async () => {
+    setConfirmPrice(null);
+    const passengers = pax.map((p) => ({
+      type: "adult",
+      name: p.name,
+      id_type: p.id_type,
+      id_number: p.id_number,
+      phone: p.phone || contact.phone,
+    }));
+    await createOrderAndPay(confirmPrice.offerId, passengers);
   };
 
   const total = sel.cabin.lowest_price * sel.adult;
@@ -286,6 +313,36 @@ export default function FlightBook() {
           </button>
         </div>
       </div>
+
+      {/* 实时价格确认弹窗 */}
+      {confirmPrice && (
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center px-6">
+          <div className="bg-white rounded-3xl p-6 w-full max-w-sm text-center">
+            <div className="text-2xl font-extrabold mb-2">价格有变动</div>
+            <div className="text-lg text-gray-500 mb-4">
+              实时核价后的最终价格为
+            </div>
+            <div className="text-brand mb-2">
+              <span className="text-2xl font-bold">¥</span>
+              <span className="text-5xl font-extrabold">
+                {yuan(confirmPrice.totalFare, false)}
+              </span>
+            </div>
+            <div className="text-base text-gray-400 mb-6">
+              （搜索时参考价 {yuan(total, false)}，以实时价为准）
+            </div>
+            <button className="btn-primary mb-3" onClick={confirmAndPay}>
+              确认并支付 {yuan(confirmPrice.totalFare)}
+            </button>
+            <button
+              className="w-full text-lg text-gray-500 py-3"
+              onClick={() => setConfirmPrice(null)}
+            >
+              再想想
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

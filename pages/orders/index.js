@@ -47,6 +47,7 @@ export default function Orders() {
           type: "flight",
           id: o.system_no,
           status: o.status,
+          status_text: o.status_text,
           title: `${o.dep_city || ""} → ${o.arr_city || ""}`,
           sub: `${o.airline || ""} ${o.flight_no || ""} · ${shortTime(o.dep_time)}`,
           dep_time: o.dep_time,
@@ -61,6 +62,7 @@ export default function Orders() {
           type: "hotel",
           id: o.order_no,
           status: o.status,
+          status_text: o.status_text,
           title: o.hotel_name || "酒店订单",
           sub: `${o.room_name || ""} · ${prettyDate(o.check_in)}-${prettyDate(o.check_out)}`,
           amount: o.total_amount,
@@ -112,7 +114,10 @@ export default function Orders() {
       {!loading && orders.length > 0 && (
         <div className="space-y-3 mt-4">
           {orders.map((o, i) => {
-            const st = o.type === "flight" ? flightStatus(o.status) : hotelStatus(o.status);
+            const st =
+              o.type === "flight"
+                ? flightStatus(o.status, o.status_text)
+                : hotelStatus(o.status, o.status_text);
             return (
               <button
                 key={i}

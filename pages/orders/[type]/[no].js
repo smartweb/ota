@@ -76,19 +76,40 @@ export default function OrderDetail() {
   if (!order) return null;
 
   const isFlight = type === "flight";
-  const st = isFlight ? flightStatus(order.status) : hotelStatus(order.status);
-  const payStatus = order.pay_status; // 机票有 pay_status
+  const st = isFlight
+    ? flightStatus(order.status, order.status_text)
+    : hotelStatus(order.status, order.status_text);
 
-  // 如果仍待支付且接口返回 checkout_url，提供再次支付
-  const canPay =
-    (isFlight && order.status === "pending_pay") ||
-    (!isFlight && order.status === "pending_payment");
+  // 待支付状态（兼容字符串状态码 "1" 和语义码 pending_pay/pending_payment）
+  const pendingSet = isFlight
+    ? ["pending_pay", "1"]
+    : ["pending_payment", "1"];
+  const isPending = pendingSet.includes(String(order.status));
+  // 兜底：status_text 含"待支付"也视为待支付
+  const canPay = isPending || /待支付|待付款/.test(order.status_text || "");
 
-  const retryPay = () => {
-    if (order.checkout_url) {
-      window.location.href = order.checkout_url;
+  // 调 order/pay 拿支付链接并跳转
+  const [paying, setPaying] = useState(false);
+  const payOrder = async (payType) => {
+    setPaying(true);
+    const path = isFlight ? "/api/flight/order/pay" : "/api/hotel/order/pay";
+    const body = isFlight
+      ? { system_no: order.system_no, pay_type: payType }
+      : { order_no: order.order_no, pay_type: payType };
+    const r = await api(path, body);
+    setPaying(false);
+    if (!r.ok) {
+      toast(r.message || "获取支付链接失败");
+      return;
+    }
+    const pp = r.data && r.data.pay_params;
+    const url =
+      pp &&
+      (pp.mweb_url || pp.pay_url || pp.code_url || (typeof pp === "string" ? pp : ""));
+    if (url) {
+      window.location.href = url;
     } else {
-      toast("请稍后在订单列表刷新，或联系客服");
+      toast("未获取到支付链接，请联系客服");
     }
   };
 
@@ -127,7 +148,7 @@ export default function OrderDetail() {
                     {shortTime(order.flight_info.dep_time || order.flight_info.depart_time)}
                   </div>
                   <div className="text-base text-gray-500">
-                    {order.flight_info.dep_city_name || order.flight_info.dep_airport_name}
+                    {order.flight_info.dep_city_name || order.flight_info.dep_city || order.flight_info.dep_airport_name}
                   </div>
                 </div>
                 <div className="text-brand text-2xl">✈️</div>
@@ -136,12 +157,12 @@ export default function OrderDetail() {
                     {shortTime(order.flight_info.arr_time)}
                   </div>
                   <div className="text-base text-gray-500">
-                    {order.flight_info.arr_city_name || order.flight_info.arr_airport_name}
+                    {order.flight_info.arr_city_name || order.flight_info.arr_city || order.flight_info.arr_airport_name}
                   </div>
                 </div>
               </div>
               <div className="text-base text-gray-400 mt-2">
-                {order.flight_info.cabin_class ? cabinClassText(order.flight_info.cabin_class) : ""}
+                {order.flight_info.cabin_class ? (["economy","business","first"].includes(order.flight_info.cabin_class) ? cabinClassText(order.flight_info.cabin_class) : order.flight_info.cabin_class) : ""}
                 {order.flight_info.dep_time ? ` · ${prettyDate(order.flight_info.dep_time.slice(0, 10))}` : ""}
               </div>
             </div>
@@ -222,12 +243,28 @@ export default function OrderDetail() {
         </div>
       )}
 
-      {/* 操作 */}
+      {/* 操作：选择支付方式 */}
       {canPay && (
         <div className="footer-bar">
-          <button className="btn-primary" onClick={retryPay}>
-            去支付 {yuan(order.total_amount)}
-          </button>
+          <div className="text-center text-base text-gray-400 mb-2">
+            应付 <span className="text-brand font-bold">{yuan(order.total_amount)}</span> · 选择支付方式
+          </div>
+          <div className="flex gap-3">
+            <button
+              className="btn-primary !w-auto flex-1 !bg-[#09bb07]"
+              disabled={paying}
+              onClick={() => payOrder("wechat_h5")}
+            >
+              {paying ? "跳转中…" : "微信支付"}
+            </button>
+            <button
+              className="btn-primary !w-auto flex-1 !bg-[#1677ff]"
+              disabled={paying}
+              onClick={() => payOrder("alipay_h5")}
+            >
+              {paying ? "跳转中…" : "支付宝"}
+            </button>
+          </div>
         </div>
       )}
 
