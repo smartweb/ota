@@ -199,13 +199,18 @@ export default function FlightBook() {
         </div>
         <div className="text-base text-inkmute mt-2">{prettyDate(sel.depart_date)}</div>
 
-        {sel.cabin.refund_rule && (
-          <div className="mt-3 pt-3 border-t border-dashed border-brand/15 text-base text-inksoft">
-            退改：{sel.cabin.refund_rule}
+        {(sel.cabin.refund_rule || sel.cabin.baggage_rule) && (
+          <div
+            className="mt-4 rounded-xl px-4 py-3 text-base flex items-start gap-2"
+            style={{ background: "#FFF7ED" }}
+          >
+            <span className="shrink-0 text-lg">📌</span>
+            <div className="text-inksoft leading-relaxed">
+              <div className="font-bold text-ink mb-1">下单前请了解退改规则</div>
+              {sel.cabin.refund_rule && <div>退改：{sel.cabin.refund_rule}</div>}
+              {sel.cabin.baggage_rule && <div>行李：{sel.cabin.baggage_rule}</div>}
+            </div>
           </div>
-        )}
-        {sel.cabin.baggage_rule && (
-          <div className="text-base text-inksoft">行李：{sel.cabin.baggage_rule}</div>
         )}
       </div>
 

@@ -195,6 +195,20 @@ export default function FlightList() {
                     <span className="text-base text-inkmute ml-1">起</span>
                   </div>
                 </div>
+
+                {/* 退改规则提前展示，让老人下单前心里有数 */}
+                {(c.refund_rule || c.baggage_rule) && (
+                  <div
+                    className="mt-3 rounded-xl px-3 py-2 text-base flex items-start gap-2"
+                    style={{ background: "#FFF7ED" }}
+                  >
+                    <span className="shrink-0">📌</span>
+                    <div className="text-inksoft leading-snug">
+                      {c.refund_rule && <div>退改：{c.refund_rule}</div>}
+                      {c.baggage_rule && <div>行李：{c.baggage_rule}</div>}
+                    </div>
+                  </div>
+                )}
               </button>
             );
           })}

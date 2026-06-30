@@ -109,20 +109,24 @@ export default function HotelRooms() {
                         <span className="text-base text-inkmute ml-1">/晚</span>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3 text-base">
+                    <div className="flex items-center gap-2 text-base flex-wrap">
                       <span
                         className={`badge ${
                           p.has_breakfast ? "status-success" : "status-cancel"
                         }`}
                       >
-                        {p.has_breakfast ? "含早餐" : "无早餐"}
+                        {p.has_breakfast ? "🍚 含早餐" : "无早餐"}
                       </span>
-                      <span
-                        className={`badge ${
-                          p.refundable ? "status-success" : "status-warn"
-                        }`}
-                      >
-                        {p.cancel_policy || (p.refundable ? "可取消" : "不可取消")}
+                    </div>
+                    {/* 取消政策：醒目展示，老人选房型时就能看到 */}
+                    <div
+                      className={`mt-3 rounded-lg px-3 py-2 text-base flex items-center gap-2 ${
+                        p.refundable ? "bg-emerald-50" : "bg-amber-50"
+                      }`}
+                    >
+                      <span className="shrink-0">{p.refundable ? "✅" : "⚠️"}</span>
+                      <span className={p.refundable ? "text-emerald-700" : "text-amber-800"}>
+                        {p.cancel_policy || (p.refundable ? "可免费取消" : "不可取消")}
                       </span>
                     </div>
                     <div className="mt-2 text-right text-base text-inkmute">

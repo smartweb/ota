@@ -109,9 +109,18 @@ export default function HotelBook() {
             {sel.nights}晚 · {sel.room_count}间
           </div>
         </div>
-        {sel.product.cancel_policy && (
-          <div className="text-base text-inksoft mt-2">取消政策：{sel.product.cancel_policy}</div>
-        )}
+        {/* 取消政策：下单前醒目提醒 */}
+        <div
+          className={`mt-4 rounded-xl px-4 py-3 text-base flex items-start gap-2 ${
+            sel.product.refundable ? "bg-emerald-50" : "bg-amber-50"
+          }`}
+        >
+          <span className="shrink-0 text-lg">{sel.product.refundable ? "✅" : "⚠️"}</span>
+          <div className={sel.product.refundable ? "text-emerald-700" : "text-amber-800"}>
+            <div className="font-bold text-ink mb-0.5">下单前请了解取消规则</div>
+            <div>{sel.product.cancel_policy || (sel.product.refundable ? "可免费取消" : "下单后不可取消")}</div>
+          </div>
+        </div>
       </div>
 
       {/* 入住人 */}
