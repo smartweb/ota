@@ -199,19 +199,17 @@ export default function FlightBook() {
         </div>
         <div className="text-base text-inkmute mt-2">{prettyDate(sel.depart_date)}</div>
 
-        {(sel.cabin.refund_rule || sel.cabin.baggage_rule) && (
-          <div
-            className="mt-4 rounded-xl px-4 py-3 text-base flex items-start gap-2"
-            style={{ background: "#FFF7ED" }}
-          >
-            <span className="shrink-0 text-lg">📌</span>
-            <div className="text-inksoft leading-relaxed">
-              <div className="font-bold text-ink mb-1">下单前请了解退改规则</div>
-              {sel.cabin.refund_rule && <div>退改：{sel.cabin.refund_rule}</div>}
-              {sel.cabin.baggage_rule && <div>行李：{sel.cabin.baggage_rule}</div>}
-            </div>
+        <div
+          className="mt-4 rounded-xl px-4 py-3 text-base flex items-start gap-2"
+          style={{ background: "#FFF7ED" }}
+        >
+          <span className="shrink-0 text-lg">📌</span>
+          <div className="text-inksoft leading-relaxed">
+            <div className="font-bold text-ink mb-1">退改与行李说明</div>
+            {sel.cabin.baggage_rule && <div>行李：{sel.cabin.baggage_rule}</div>}
+            <div>退票规则：下单后可在订单详情中查看具体退票手续费</div>
           </div>
-        )}
+        </div>
       </div>
 
       {/* 乘机人 */}

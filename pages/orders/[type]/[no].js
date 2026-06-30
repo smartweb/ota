@@ -20,6 +20,8 @@ export default function OrderDetail() {
   const [order, setOrder] = useState(null);
   const [err, setErr] = useState("");
   const [paying, setPaying] = useState(false);
+  const [cancelFee, setCancelFee] = useState(null); // 退票手续费查询结果
+  const [feeLoading, setFeeLoading] = useState(false);
 
   useEffect(() => {
     if (!router.isReady || !type || !no) return;
@@ -110,6 +112,19 @@ export default function OrderDetail() {
       window.location.href = url;
     } else {
       toast("未获取到支付链接，请联系客服");
+    }
+  };
+
+  // 查询退票手续费（已下单后可查看具体扣多少）
+  const queryCancelFee = async () => {
+    if (!isFlight) return; // 第一版仅机票支持
+    setFeeLoading(true);
+    const r = await api("/api/flight/order/cancel-fee", { order_id: order.system_no });
+    setFeeLoading(false);
+    if (r.ok && r.data) {
+      setCancelFee(r.data);
+    } else {
+      toast(r.message || "查询退票手续费失败");
     }
   };
 
@@ -231,15 +246,68 @@ export default function OrderDetail() {
         </div>
       )}
 
-      {/* 退改规则（仅展示，不提供操作） */}
-      {isFlight && order.refund_rule && (
+      {/* 退票手续费查询（机票）：让老人清楚退票扣多少钱 */}
+      {isFlight && (
         <div className="card mt-4">
-          <div className="text-lg font-bold mb-2">退改规则</div>
-          <div className="text-base text-inksoft leading-relaxed whitespace-pre-line">
-            {typeof order.refund_rule === "string"
-              ? order.refund_rule
-              : order.refund_rule.current?.summary || JSON.stringify(order.refund_rule)}
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xl font-extrabold">退票规则</span>
+            {!cancelFee && (
+              <button
+                onClick={queryCancelFee}
+                disabled={feeLoading}
+                className="btn-ghost"
+              >
+                {feeLoading ? "查询中…" : "查看退票手续费"}
+              </button>
+            )}
           </div>
+
+          {!cancelFee && (
+            <div className="text-base text-inksoft leading-relaxed">
+              想了解这张机票能退多少钱、扣多少手续费？点上方按钮即可查询。
+              <div className="mt-2 text-inkmute">
+                （一般规律：起飞越早退票手续费越高；特价/折扣票退票费通常较高，部分特价票不可退）
+              </div>
+            </div>
+          )}
+
+          {cancelFee && (
+            <div className="space-y-2">
+              {cancelFee.refund_rule && (
+                <div className="text-base text-inksoft leading-relaxed">
+                  {cancelFee.refund_rule}
+                </div>
+              )}
+              <div
+                className={`rounded-xl px-4 py-3 text-base ${
+                  cancelFee.refundable ? "bg-emerald-50" : "bg-amber-50"
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <span className={cancelFee.refundable ? "text-emerald-700" : "text-amber-800"}>
+                    {cancelFee.refundable ? "✅ 可退票" : "⚠️ 当前不可退票"}
+                  </span>
+                </div>
+                {cancelFee.refundable && (
+                  <div className="mt-2 flex items-center justify-between text-ink">
+                    <span>可退金额</span>
+                    <span className="text-brand font-extrabold text-2xl">
+                      {yuan(cancelFee.refund_amount)}
+                    </span>
+                  </div>
+                )}
+                {cancelFee.cancel_fee > 0 && (
+                  <div className="mt-1 flex items-center justify-between text-inksoft">
+                    <span>退票手续费</span>
+                    <span className="font-bold">{yuan(cancelFee.cancel_fee)}</span>
+                  </div>
+                )}
+              </div>
+              <div className="text-base text-inkmute">
+                如需退票，请联系客服处理。
+              </div>
+            </div>
+          )}
         </div>
       )}
 
